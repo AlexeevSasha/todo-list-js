@@ -35,7 +35,10 @@ const tasks = [
   const objOfTasks = arrOfTasks.reduce( (acc, task) => {
     acc[task._id] = task;
     return acc;
-  }, {})
+  }, {});
+
+ // Elements UI
+ const listContainer = document.querySelector('.tasks-list-section .list-group')
 
   renderAlltasks(objOfTasks);
 
@@ -46,9 +49,43 @@ const tasks = [
       }
 
       const fragment = document.createDocumentFragment();
+      Object.values(tasksList).forEach(task => {
+        const li = listItemTempleta(task);
+        fragment.appendChild(li);
+      });
+
+      listContainer.appendChild(fragment)
+  }
+
+
+
+  function listItemTempleta( { _id, title , body} = {}) {
+    const li = document.createElement('li');
+    li.classList.add('list-group-item', 'd-flex', 'align-items-center', 'flex-wrap', 'mt-2');
+
+    const span = document.createElement('span');
+    span.textContent = title;
+    span.style.fontWeight = 'bold';
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('btn', 'btn-danger', 'ml-auto', 'delete-btn')
+    deleteBtn.textContent = 'Delete task'
+
+    const article = document.createElement('p');
+    article.classList.add('mt-2', 'w-100')
+    article.textContent = body;
+
+    li.appendChild(span);
+    li.appendChild(deleteBtn);
+    li.appendChild(article);
+
+    return li;
   }
 
 
 })(tasks);
+
+
+
 
 
