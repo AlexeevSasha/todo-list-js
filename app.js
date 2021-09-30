@@ -48,6 +48,7 @@ const tasks = [
 // Events
   renderAlltasks(objOfTasks);
   form.addEventListener('submit', onFormSubmitHandler)
+  listContainer.addEventListener('click', onDeleteHandler)
 
 
 // Добавление tasks в listContainer
@@ -70,6 +71,7 @@ const tasks = [
   function listItemTempleta( { _id, title , body} = {}) {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'align-items-center', 'flex-wrap', 'mt-2');
+    li.setAttribute('data-task-id', _id)
 
     const span = document.createElement('span');
     span.textContent = title;
@@ -90,6 +92,7 @@ const tasks = [
     return li;
   }
 
+//Объект событыия для form
   function onFormSubmitHandler (e) {
     e.preventDefault();
     const titleValue = inputTitle.value;
@@ -118,6 +121,33 @@ const tasks = [
 
     return { ...newTask };
   }
+
+//Объект событыия для listContainer
+  function onDeleteHandler({target}) {
+    if (target.classList.contains('delete-btn')) {
+      const parent = target.closest('[data-task-id]')
+      const id = parent.dataset.taskId;
+      const confirmed =  returnsConfirm(id);
+      deleteTaskFormHtml(confirmed, parent)
+    }
+  }
+
+// Удаляет task
+  function deleteTaskFormHtml (confirmed,el) {
+    if (!confirmed) return;
+    el.remove();
+  }
+
+// возвращает Confirm
+  function returnsConfirm(id) {
+    const {title} = objOfTasks[id];
+    const isConfirm = confirm(`Вы точно хотите удалчить задачу: ${title}`)
+    if (!isConfirm) return isConfirm;
+    delete objOfTasks[id];
+    return isConfirm;
+  }
+
+
 
 
 })(tasks);
