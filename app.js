@@ -31,17 +31,26 @@ const tasks = [
   },
 ];
 
+
+
 (function(arrOfTasks) {
   const objOfTasks = arrOfTasks.reduce( (acc, task) => {
     acc[task._id] = task;
     return acc;
   }, {});
 
- // Elements UI
+ // Элемент UI
  const listContainer = document.querySelector('.tasks-list-section .list-group')
+ const form = document.forms['addTask'];
+ const inputTitle = form.elements['title'];
+ const inputBody = form.elements['body'];
 
+// Events
   renderAlltasks(objOfTasks);
+  form.addEventListener('submit', onFormSubmitHandler)
 
+
+// Добавление tasks в listContainer
   function renderAlltasks(tasksList) {
       if (!tasksList) {
         console.error('Передайте список задач!')
@@ -57,8 +66,7 @@ const tasks = [
       listContainer.appendChild(fragment)
   }
 
-
-
+// Создание разметки
   function listItemTempleta( { _id, title , body} = {}) {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'align-items-center', 'flex-wrap', 'mt-2');
@@ -82,8 +90,43 @@ const tasks = [
     return li;
   }
 
+  function onFormSubmitHandler (e) {
+    e.preventDefault();
+    const titleValue = inputTitle.value;
+    const bodyValue = inputBody.value;
+
+    if (!titleValue || !bodyValue) {
+      alert('Пожалуйста введите Task title и Task body')
+        return;
+    }
+    const task = createNewTask(titleValue, bodyValue)
+    const listItem = listItemTempleta(task);
+    listContainer.insertAdjacentElement('afterbegin', listItem)
+    form.reset();
+  }
+
+// Создаёт task
+  function createNewTask(title, body) {
+    const newTask = {
+      title,
+      body,
+      completed: false,
+      _id: `task-${Math.random()}`,
+    };
+
+    objOfTasks[newTask._id] = newTask;
+
+    return { ...newTask };
+  }
+
 
 })(tasks);
+
+
+
+
+
+
 
 
 
